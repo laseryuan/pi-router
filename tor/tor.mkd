@@ -1,12 +1,10 @@
 ```
-docker run -d --name=tor --rm -p 9050:9050 -p 9040:9040 -p 5354:5353/udp -v $PWD/torrc:/etc/tor/torrc lasery/rpi-tor
-
 docker run --net=host -d --name=tor --rm -v $PWD/torrc:/etc/tor/torrc lasery/rpi-tor
 
-sudo iptables-save > /tmp/iptables.backup
+sudo iptables-save > ~/iptables.backup
 sudo ./tor-iptables.sh
 sudo iptables --flush
-sudo iptables-restore < /tmp/iptables.backup
+sudo iptables-restore < ~/iptables.backup
 
 curl --proxy socks5://localhost:9050 https://check.torproject.org/api/ip
 curl https://check.torproject.org/api/ip
@@ -14,7 +12,10 @@ curl https://check.torproject.org/api/ip
 sudo watch -d iptables -t nat -L --line-numbers -v -n
 ```
 # Testing
+docker exec -it tor bash
+
 nc -uzv 127.0.0.1 5354
+nc -uzv 172.17.0.2 5353
 nc -uzv 127.0.0.1 53
 nc -uzv 192.168.1.136 5354
 
@@ -23,6 +24,13 @@ dig @172.17.0.2 -p 5353 google.com
 dig @127.0.0.1 -p 53 google.com
 dig @192.168.1.136 -p 5354 google.com
 
+nslookup -port=5354 google.com 127.0.0.1
+nslookup -port=5353 google.com 172.17.0.2
+dig @172.17.0.2 -p 5353 google.com
+dig @127.0.0.1 -p 53 google.com
+dig @192.168.1.136 -p 5354 google.com
+
+nc -zv localhost 9050
 nc -zv 138.201.14.212 443
 
 # Development

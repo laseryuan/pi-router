@@ -19,7 +19,7 @@ _tor_uid=$(docker exec -u tor tor id -u)
 
 # Tor's TransPort
 _trans_port="9040"
-_dns_port="5354"
+_dns_port="5353"
 
 ### set iptables *nat
 iptables -t nat -A OUTPUT -m owner --uid-owner $_tor_uid -j RETURN
