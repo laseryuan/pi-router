@@ -15,7 +15,7 @@ fi
 _non_tor="192.168.1.0/24 192.168.0.0/24"
 
 # get the UID that Tor runs as
-_tor_uid=$(docker exec -u tor tor id -u)
+_tor_uid=$(id -u tor)
 
 # Tor's TransPort
 _trans_port="9040"
