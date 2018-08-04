@@ -1,6 +1,7 @@
 # Usage
 ```
-docker run --restart=always --sysctl net.ipv4.conf.wlan0.route_localnet=1 --net=host --cap-add=NET_ADMIN --cap-add=NET_RAW -d --name=tor lasery/rpi-tor:18.07
+read -p 'Network Interface: ' NIC && NIC=${NIC:-wlan0} && echo $NIC
+docker run --restart=always --sysctl net.ipv4.conf.$NIC.route_localnet=1 --net=host --cap-add=NET_ADMIN --cap-add=NET_RAW -d --name=tor lasery/rpi-tor:18.07
 ```
 
 Restore router network:
