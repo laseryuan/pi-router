@@ -13,15 +13,23 @@ fi
 ### set variables
 # destinations you don't want routed through Tor
 _non_tor="192.168.1.0/24 192.168.0.0/24"
+# _non_tor="192.168.1.1 192.168.0.100"
 
 # get the UID that Tor runs as
 _tor_uid=$(docker exec -u tor tor id -u)
 
 # Tor's TransPort
 _trans_port="9040"
-_dns_port="5353"
+_dns_port="15353"
+
+### route all trafic to local port
+# need to enalbe localnet routing: sudo sysctl -w net.ipv4.conf.wlan0.route_localnet=1
+iptables -t nat -A PREROUTING -p udp --dport 53 -j DNAT --to 127.0.0.1:$_dns_port
+iptables -t nat -A PREROUTING -p tcp --syn ! --dport 22 -j DNAT --to 127.0.0.1:$_trans_port
 
 ### set iptables *nat
+
+# local requests
 iptables -t nat -A OUTPUT -m owner --uid-owner $_tor_uid -j RETURN
 iptables -t nat -A OUTPUT -p udp --dport 53 -j REDIRECT --to-ports $_dns_port
 
