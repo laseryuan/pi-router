@@ -1,44 +1,55 @@
+# Usage
 ```
-docker run --net=host -d --name=tor --rm -v $PWD/torrc:/etc/tor/torrc lasery/rpi-tor
+docker run --net=host -d --name=tor --rm lasery/rpi-tor:18.07
+```
 
-sudo iptables-save > ~/iptables.backup
-sudo ./tor-iptables.sh
-sudo iptables --flush
-sudo iptables-restore < ~/iptables.backup
+# Testing
+```
+docker exec -it tor bash
 
 curl --proxy socks5://localhost:9050 https://check.torproject.org/api/ip
 curl https://check.torproject.org/api/ip
 
-sudo watch -d iptables -t nat -L --line-numbers -v -n
-```
-# Testing
-docker exec -it tor bash
-
-nc -uzv 127.0.0.1 5354
+nc -uzv 127.0.0.1 15353
 nc -uzv 172.17.0.2 5353
 nc -uzv 127.0.0.1 53
-nc -uzv 192.168.1.136 5354
+nc -uzv 192.168.1.136 5353
 
-dig @127.0.0.1 -p 5354 google.com
-dig @172.17.0.2 -p 5353 google.com
-dig @127.0.0.1 -p 53 google.com
-dig @192.168.1.136 -p 5354 google.com
-
-nslookup -port=5354 google.com 127.0.0.1
+nslookup -port=5353 google.com 127.0.0.1
+nslookup -port=15353 google.com 127.0.0.1
+nslookup -port=53 google.com 127.0.0.1
+nslookup -port=53 google.com 192.168.1.136
 nslookup -port=5353 google.com 172.17.0.2
-dig @172.17.0.2 -p 5353 google.com
 dig @127.0.0.1 -p 53 google.com
 dig @192.168.1.136 -p 5354 google.com
 
 nc -zv localhost 9050
 nc -zv 138.201.14.212 443
+```
 
 # Development
+Need to enalbe localnet routing:
 ```
-docker build -t lasery/rpi-tor .
-docker tag lasery/rpi-tor lasery/rpi-tor:20180726
-docker push lasery/rpi-tor:20180726
+sysctl net.ipv4.conf.wlan0.route_localnet
+sudo sysctl -w net.ipv4.conf.wlan0.route_localnet=1
 ```
 
-docker run -d -v torrc:/etc/tor/torrc -p 9001:9001 pajdk/rpi-tor:0.3.0.6
-docker run -v $PWD/torrc:/etc/tor/torrc -p 9001:9001 pajdk/rpi-tor:0.3.0.6
+```
+docker rm -f tor
+docker run -d --net=host --name=tor --rm -v $PWD/torrc:/etc/tor/torrc lasery/rpi-tor
+# docker run -p 9050:9050 -p 9040:9040 -p 15353:5353/udp --name=tor --rm -v $PWD/torrc:/etc/tor/torrc lasery/rpi-tor
+docker logs -f tor
+
+sudo iptables-save > ~/iptables.backup
+sudo ./tor-iptables.sh
+sudo iptables-restore < ~/iptables.backup
+
+sudo watch -d iptables -t nat -L --line-numbers -v -n
+```
+
+## Build
+```
+docker build -t lasery/rpi-tor .
+docker tag lasery/rpi-tor lasery/rpi-tor:18.07
+docker push lasery/rpi-tor:18.07
+```
