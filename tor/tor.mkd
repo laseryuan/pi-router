@@ -1,14 +1,16 @@
 # Usage
 ```
-docker run --sysctl net.ipv4.conf.wlan0.route_localnet=1 --net=host -d --name=tor --rm lasery/rpi-tor:18.07
+docker run --sysctl net.ipv4.conf.wlan0.route_localnet=1 --net=host --cap-add=NET_ADMIN --cap-add=NET_RAW -d --name=tor --rm lasery/rpi-tor:18.07
+docker exec -u root tor /home/tor/app/tor-iptables.sh
+```
+
+Restore router network:
+```
+docker exec -u root -i tor iptables-restore < ~/iptables.backup
 ```
 
 # Testing
 ```
-docker exec -it tor bash
-./tor-iptables.sh
-
-curl --proxy socks5://localhost:9050 https://check.torproject.org/api/ip
 curl https://check.torproject.org/api/ip
 
 nc -uzv 127.0.0.1 15353
