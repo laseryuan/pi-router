@@ -4,9 +4,6 @@
 # https://trac.torproject.org/projects/tor/wiki/doc/TransparentProxy
 # With a few minor edits
 
-# backup current iptables
-iptables-save > ~/iptables.backup
-
 # to run iptables commands you need to be root
 if [ "$EUID" -ne 0 ]; then
     echo "Please run as root."
