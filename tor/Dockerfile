@@ -27,5 +27,5 @@ COPY app /home/tor/app
 USER tor
 WORKDIR /home/tor/app/
 
-# set command as minimal default
-CMD [ "./start_server.sh" ]
+STOPSIGNAL SIGTERM
+ENTRYPOINT [ "./start_router.sh" ]
