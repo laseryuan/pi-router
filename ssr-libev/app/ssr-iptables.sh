@@ -22,8 +22,6 @@ _trans_port="9040"
 _dns_port="15353"
 
 ### route all trafic to local port
-#iptables -t nat -A PREROUTING -p udp --dport 53 -j DNAT --to 127.0.0.1:$_dns_port
-# iptables -t nat -A PREROUTING -p tcp --syn -s 192.168.1.105/32 ! --dport 22 -j DNAT --to 127.0.0.1:$_trans_port
 iptables -t nat -A PREROUTING -p tcp --syn ! --dport 22 -j REDIRECT --to-ports $_trans_port
 
 ### route all trafic to local port

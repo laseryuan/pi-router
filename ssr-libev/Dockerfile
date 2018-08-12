@@ -13,10 +13,20 @@ WORKDIR /root/shadowsocksr-libev
 RUN ./configure && make
 RUN make install
 
-# Development
 RUN apt-get update
 RUN apt-get install -y \
-  curl \
-  dnsutils \
-  netcat \
+  iptables \
   --no-install-recommends
+
+# Development
+# RUN apt-get install -y \
+  # curl \
+  # dnsutils \
+  # netcat \
+  # --no-install-recommends
+
+COPY app /root/app
+WORKDIR /root/app/
+
+STOPSIGNAL SIGTERM
+ENTRYPOINT [ "./start_router.sh" ]

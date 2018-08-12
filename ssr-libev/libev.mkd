@@ -1,22 +1,32 @@
 # Usage
-Client:
+Client (ssr's libev has no server version):
 ```
 read -p 'Server name: ' SERVER_NAME && SERVER_NAME=${SERVER_NAME:-changeme.com} && echo $SERVER_NAME
 read -p 'Sever password: ' SERVER_PASSWORD && SERVER_PASSWORD=${SERVER_PASSWORD:-MY_SSPASSWORD} && echo $SERVER_PASSWORD
 read -p 'Server port number: ' SERVER_PORT && SERVER_PORT=${SERVER_PORT:-14443} && echo $SERVER_PORT
 read -p 'Socks5 port number: ' SOCKS_PORT && SOCKS_PORT=${SOCKS_PORT:-1080} && echo $SOCKS_PORT
 
-docker run -d --restart always -p $SOCKS_PORT:1080 --name ssr-client lasery/rpi-shadowsocksr-libev:20180723 ss-local \
+docker run -d --restart always -p $SOCKS_PORT:1080 --name ssr-client lasery/rpi-shadowsocksr-libev:18.08 ss-local \
 -l 1080 -m aes-256-cfb -b 0.0.0.0 \
 -O origin \
 -s $SERVER_NAME -p $SERVER_PORT -k $SERVER_PASSWORD
+
+docker run -d --restart always -p $SOCKS_PORT:1080 --name ssr-client \
+-e SERVER_NAME=$SERVER_NAME -e SERVER_PORT=$SERVER_PORT -e SERVER_PASSWORD=$SERVER_PASSWORD \
+lasery/rpi-shadowsocksr-libev:18.08
 ```
 
 # Development
 
 ```
+cd ~/projects/rpi-router/ssr-libev
 docker rm -f ssr
 docker run -d --sysctl net.ipv4.conf.wlan0.route_localnet=1 --net=host --cap-add=NET_ADMIN --cap-add=NET_RAW --name=ssr --rm -v $PWD/app/:/home/ssr-libev/app/ lasery/rpi-ssr-libev ss-redir -l 9040 -m aes-256-cfb -b 0.0.0.0 -O origin -s 192.168.1.120 -p 14443 -k MY_SSPASSWORD -u -v
+
+docker run --rm --sysctl net.ipv4.conf.wlan0.route_localnet=1 --net=host --cap-add=NET_ADMIN --cap-add=NET_RAW --name ssr \
+-v $PWD/app/:/root/app/ \
+-e SERVER_NAME=192.168.1.120 -e SERVER_PORT=14443 -e SERVER_PASSWORD=MY_SSPASSWORD \
+lasery/rpi-ssr-libev
 
 docker logs -f ssr
 
@@ -33,7 +43,7 @@ sudo watch -d iptables -t nat -L --line-numbers -v -n
 ## Build
 ```
 docker build -t lasery/rpi-ssr-libev .
-docker tag lasery/rpi-ssr-libev lasery/rpi-ssr-libev:18.07
+docker tag lasery/rpi-ssr-libev lasery/rpi-ssr-libev:18.08
 docker push lasery/rpi-ssr-libev:18.07
 ```
 
