@@ -33,9 +33,9 @@ nc -zv 138.201.14.212 443
 # Development
 
 ```
+cd ~/projects/rpi-router/tor
 docker rm -f tor
-docker run -d --sysctl net.ipv4.conf.wlan0.route_localnet=1 --net=host --cap-add=NET_ADMIN --cap-add=NET_RAW --name=tor --rm -v $PWD/app/:/home/tor/app/ lasery/rpi-tor
-# docker run -p 9050:9050 -p 9040:9040 -p 15353:5353/udp --name=tor --rm -v $PWD/torrc:/etc/tor/torrc lasery/rpi-tor
+docker run --sysctl net.ipv4.conf.wlan0.route_localnet=1 --net=host --cap-add=NET_ADMIN --cap-add=NET_RAW --name=tor --rm -v $PWD/app/:/home/tor/app/ lasery/rpi-tor
 docker logs -f tor
 
 sudo iptables-save > ~/iptables.backup

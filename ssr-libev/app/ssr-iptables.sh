@@ -18,8 +18,7 @@ _non_tor="192.168.1.0/24 192.168.0.0/24"
 # _tor_uid=$(id -u tor)
 
 # Tor's TransPort
-_trans_port="9040"
-_dns_port="15353"
+_trans_port=$TPROXY_PORT
 
 ### route all trafic to local port
 iptables -t nat -A PREROUTING -p tcp --syn ! --dport 22 -j REDIRECT --to-ports $_trans_port
@@ -27,6 +26,7 @@ iptables -t nat -A PREROUTING -p tcp --syn ! --dport 22 -j REDIRECT --to-ports $
 ### route all trafic to local port
 ip rule add fwmark 0x01/0x01 table 100
 ip route add local 0.0.0.0/0 dev lo table 100
+
 iptables -t mangle -N SSUDP
 iptables -t mangle -A SSUDP -p udp -j TPROXY --on-port $_trans_port --tproxy-mark 0x01/0x01
 iptables -t mangle -A PREROUTING -j SSUDP
@@ -46,7 +46,6 @@ iptables -t mangle -I PREROUTING -d 255.255.0.0/8 -j RETURN
 
 # local requests
 # iptables -t nat -A OUTPUT -m owner --uid-owner $_tor_uid -j RETURN
-#iptables -t nat -A OUTPUT -p udp --dport 53 -j REDIRECT --to-ports $_dns_port
 
 # allow clearnet access for hosts in $_non_tor
 for _clearnet in $_non_tor 127.0.0.0/9 127.128.0.0/10; do

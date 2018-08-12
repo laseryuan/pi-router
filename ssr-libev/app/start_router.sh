@@ -13,12 +13,12 @@ term_handler() {
 trap 'term_handler' SIGHUP SIGINT SIGTERM
 
 echo "Setting up network..."
-/root/app/tor-iptables.sh
+/root/app/ssr-iptables.sh
 echo "Done"
 
 echo "Starting SSR client..."
-echo -s $SERVER_NAME -p $SERVER_PORT -k $SERVER_PASSWORD
+echo -s SERVER_NAME:$SERVER_NAME SERVER_PORT:$SERVER_PORT SERVER_PASSWORD:$SERVER_PASSWORD TPROXY_PORT:$TPROXY_PORT
 ss-local \
--l 9040 -m aes-256-cfb -b 0.0.0.0 \
+-l $TPROXY_PORT -m aes-256-cfb -b 0.0.0.0 \
 -O origin \
 -s $SERVER_NAME -p $SERVER_PORT -k $SERVER_PASSWORD & wait

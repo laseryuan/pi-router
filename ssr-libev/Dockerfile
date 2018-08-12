@@ -17,6 +17,9 @@ RUN apt-get update
 RUN apt-get install -y \
   iptables \
   --no-install-recommends
+RUN apt-get install -y \
+  iproute2 \
+  --no-install-recommends
 
 # Development
 # RUN apt-get install -y \
