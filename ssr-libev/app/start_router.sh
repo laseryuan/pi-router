@@ -22,5 +22,4 @@ ss-redir \
 -l $TPROXY_PORT -m aes-256-cfb -b 0.0.0.0 \
 -O origin \
 -u \
--v \
 -s $SERVER_NAME -p $SERVER_PORT -k $SERVER_PASSWORD & wait
