@@ -29,3 +29,7 @@ dig @192.168.1.136 -p 5354 google.com
 nc -zv localhost 9050
 nc -zv 138.201.14.212 443
 ```
+
+# TODO
+1. Run without "--net=host"
+How to deal with "ip rule add" and "ip route add" in ssr-iptables.sh
