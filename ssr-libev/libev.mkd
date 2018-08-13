@@ -1,17 +1,5 @@
-# Usage
-Client (ssr's libev has no server version):
-```
-read -p 'Server name: ' SERVER_NAME && SERVER_NAME=${SERVER_NAME:-192.168.1.120} && echo $SERVER_NAME
-read -p 'Server port number: ' SERVER_PORT && SERVER_PORT=${SERVER_PORT:-14443} && echo $SERVER_PORT
-read -p 'Sever password: ' SERVER_PASSWORD && SERVER_PASSWORD=${SERVER_PASSWORD:-MY_SSPASSWORD} && echo $SERVER_PASSWORD
-
-docker run -d --restart always --sysctl net.ipv4.conf.all.route_localnet=1 --net=host --cap-add=NET_ADMIN --cap-add=NET_RAW --name ssr \
--e TPROXY_PORT=19040 \
--e SERVER_NAME=$SERVER_NAME -e SERVER_PORT=$SERVER_PORT -e SERVER_PASSWORD=$SERVER_PASSWORD \
-lasery/rpi-ssr-libev:18.08
-```
-
 # Development
+Client (ssr's libev has no server version):
 
 ```
 cd ~/projects/rpi-router/ssr-libev

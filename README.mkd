@@ -1,5 +1,18 @@
 # Usage
 1. Start Tor container
+- ShadowsocksR
+```
+read -p 'Server name: ' SERVER_NAME && SERVER_NAME=${SERVER_NAME:-192.168.1.120} && echo $SERVER_NAME
+read -p 'Server port number: ' SERVER_PORT && SERVER_PORT=${SERVER_PORT:-14443} && echo $SERVER_PORT
+read -p 'Sever password: ' SERVER_PASSWORD && SERVER_PASSWORD=${SERVER_PASSWORD:-MY_SSPASSWORD} && echo $SERVER_PASSWORD
+
+docker run -d --restart always --sysctl net.ipv4.conf.all.route_localnet=1 --net=host --cap-add=NET_ADMIN --cap-add=NET_RAW --name ssr-router \
+-e TPROXY_PORT=19040 \
+-e SERVER_NAME=$SERVER_NAME -e SERVER_PORT=$SERVER_PORT -e SERVER_PASSWORD=$SERVER_PASSWORD \
+lasery/rpi-ssr-libev:18.08
+```
+
+- Tor
 ```
 read -p 'Network Interface: ' NIC && NIC=${NIC:-wlan0} && echo $NIC
 docker run --restart=always --sysctl net.ipv4.conf.$NIC.route_localnet=1 --net=host --cap-add=NET_ADMIN --cap-add=NET_RAW -d --name=tor lasery/rpi-tor:18.07
