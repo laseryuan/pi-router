@@ -48,3 +48,5 @@ nc -zv 138.201.14.212 443
 How to deal with "ip rule add" and "ip route add" in ssr-iptables.sh
 
 1. Duplicate rules got added by "ip" command
+
+1. How to resovle ssr server ip?
