@@ -1,0 +1,20 @@
+# Development
+```
+cd ~/projects/rpi-router/raspap
+
+docker run --rm --privileged --net=host --name raspap \
+-v /etc/wpa_supplicant/wpa_supplicant.conf \
+lasery/raspap
+
+docker rm -f raspap
+```
+
+## Build
+```
+docker build -t lasery/raspap .
+docker tag lasery/raspap lasery/raspap:18.08
+docker push lasery/raspap:18.08
+```
+
+# Reference
+https://hub.docker.com/r/jjshin/raspap/
