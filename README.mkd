@@ -8,10 +8,7 @@ read -p 'Server name: ' SERVER_NAME && SERVER_NAME=${SERVER_NAME:-192.168.1.120}
 read -p 'Server port number: ' SERVER_PORT && SERVER_PORT=${SERVER_PORT:-14443} && echo $SERVER_PORT
 read -p 'Sever password: ' SERVER_PASSWORD && SERVER_PASSWORD=${SERVER_PASSWORD:-MY_SSPASSWORD} && echo $SERVER_PASSWORD
 
-docker run -d --restart always --sysctl net.ipv4.conf.all.route_localnet=1 --net=host --cap-add=NET_ADMIN --cap-add=NET_RAW --name ssr-router \
--e TPROXY_PORT=19040 \
--e SERVER_NAME=$SERVER_NAME -e SERVER_PORT=$SERVER_PORT -e SERVER_PASSWORD=$SERVER_PASSWORD \
-lasery/rpi-ssr-libev:18.08
+docker run -d --restart always --sysctl net.ipv4.conf.all.route_localnet=1 --net=host --cap-add=NET_ADMIN --cap-add=NET_RAW --name ssr-router -e TPROXY_PORT=19040 -e SERVER_NAME=$SERVER_NAME -e SERVER_PORT=$SERVER_PORT -e SERVER_PASSWORD=$SERVER_PASSWORD lasery/rpi-ssr-libev:18.08
 ```
 
 Stop the router:
@@ -38,27 +35,6 @@ docker run -d --restart always --privileged --pid=host --net=host --name raspap 
 1. Stop raspap
 ```
 docker rm -f raspap
-```
-
-# Testing
-```
-curl https://check.torproject.org/api/ip
-
-nc -uzv 127.0.0.1 15353
-nc -uzv 172.17.0.2 5353
-nc -uzv 127.0.0.1 53
-nc -uzv 192.168.1.136 5353
-
-nslookup -port=5353 google.com 127.0.0.1
-nslookup -port=15353 google.com 127.0.0.1
-nslookup -port=53 google.com 127.0.0.1
-nslookup -port=53 google.com 192.168.1.136
-nslookup -port=5353 google.com 172.17.0.2
-dig @127.0.0.1 -p 53 google.com
-dig @192.168.1.136 -p 5354 google.com
-
-nc -zv localhost 9050
-nc -zv 138.201.14.212 443
 ```
 
 # TODO

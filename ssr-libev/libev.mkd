@@ -31,5 +31,26 @@ docker tag lasery/rpi-ssr-libev lasery/rpi-ssr-libev:18.08
 docker push lasery/rpi-ssr-libev:18.08
 ```
 
+# Testing
+```
+curl https://check.torproject.org/api/ip
+
+nc -uzv 127.0.0.1 15353
+nc -uzv 172.17.0.2 5353
+nc -uzv 127.0.0.1 53
+nc -uzv 192.168.1.136 5353
+
+nslookup -port=5353 google.com 127.0.0.1
+nslookup -port=15353 google.com 127.0.0.1
+nslookup -port=53 google.com 127.0.0.1
+nslookup -port=53 google.com 192.168.1.136
+nslookup -port=5353 google.com 172.17.0.2
+dig @127.0.0.1 -p 53 google.com
+dig @192.168.1.136 -p 5354 google.com
+
+nc -zv localhost 9050
+nc -zv 138.201.14.212 443
+```
+
 # Reference
 https://github.com/shadowsocksrr/shadowsocksr-libev
