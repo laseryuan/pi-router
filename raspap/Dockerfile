@@ -21,13 +21,19 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -q -y install \
   hostapd \
   bridge-utils \
   hostap-utils \
+  iproute2 \
   iw \
   dnsmasq \
   wpasupplicant \
 --no-install-recommends \
 && apt-get clean
 
-RUN echo 'www-data ALL=(ALL) NOPASSWD: ALL\n%www-date ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/www-data
+# Development
+# RUN apt-get update
+# RUN DEBIAN_FRONTEND=noninteractive apt-get -q -y install \
+# --no-install-recommends
+
+RUN echo 'www-data ALL=(ALL) NOPASSWD: ALL\n%www-data ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/www-data
 
 RUN chmod 0440 /etc/sudoers.d/www-data
 RUN rm -rf /var/www/html
@@ -45,3 +51,9 @@ EXPOSE 80
 EXPOSE 100
 
 ENTRYPOINT ["lighttpd", "-D", "-f", "/etc/lighttpd/lighttpd.conf"]
+
+# RUN DEBIAN_FRONTEND=noninteractive apt-get -q -y install \
+  # dhcpcd5 \
+# --no-install-recommends
+
+# RUN adduser root netdev

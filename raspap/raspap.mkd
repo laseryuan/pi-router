@@ -3,8 +3,10 @@
 cd ~/projects/rpi-router/raspap
 
 docker run --rm --privileged --net=host --name raspap \
--v /etc/wpa_supplicant/wpa_supplicant.conf \
+-v /etc/wpa_supplicant/wpa_supplicant.conf:/etc/wpa_supplicant/wpa_supplicant.conf \
 lasery/raspap
+
+wpa_supplicant -i wlan0 -c /etc/wpa_supplicant/wpa_supplicant.conf
 
 docker rm -f raspap
 ```
@@ -18,3 +20,9 @@ docker push lasery/raspap:18.08
 
 # Reference
 https://hub.docker.com/r/jjshin/raspap/
+
+--device /dev/snd:/dev/snd \
+--device /dev/rfkill:/dev/rfkill \
+--cap-add=NET_ADMIN --cap-add=NET_RAW \
+-v /etc/wpa_supplicant:/etc/wpa_supplicant \
+-v /etc/network/interfaces:/etc/network/interfaces \
