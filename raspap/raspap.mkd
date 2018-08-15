@@ -1,14 +1,11 @@
 # Development
+1. Start container
 ```
 cd ~/projects/rpi-router/raspap
 
 docker run --rm --privileged --net=host --name raspap \
 -v /etc/wpa_supplicant/wpa_supplicant.conf:/etc/wpa_supplicant/wpa_supplicant.conf \
 lasery/raspap
-
-wpa_supplicant -i wlan0 -c /etc/wpa_supplicant/wpa_supplicant.conf
-
-docker rm -f raspap
 ```
 
 ## Build

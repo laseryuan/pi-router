@@ -1,4 +1,6 @@
 # Usage
+
+## Tor router
 1. Start Tor container
 - ShadowsocksR
 ```
@@ -12,6 +14,11 @@ docker run -d --restart always --sysctl net.ipv4.conf.all.route_localnet=1 --net
 lasery/rpi-ssr-libev:18.08
 ```
 
+Stop the router:
+```
+docker stop ssr-router
+```
+
 - Tor
 ```
 read -p 'Network Interface: ' NIC && NIC=${NIC:-wlan0} && echo $NIC
@@ -21,6 +28,29 @@ docker run --restart=always --sysctl net.ipv4.conf.$NIC.route_localnet=1 --net=h
 1. Set ethnet devices' gateway to the ip of the rpi-router
 
 Always use "docker stop tor" to stop the router container. Don't use "docker rm -f tor" to stop the container, since that would leave a trail to the network configuration
+
+## Raspap
+1. Disable wpa_supplicant on host:
+```
+sudo pkill wpa_supplicant
+```
+Or follow https://github.com/cjimti/iotwifi#disable-wpa_supplicant-on-raspberry-pi
+
+1. Start container
+```
+docker run -d --restart always --privileged --net=host --name raspap -v /etc/wpa_supplicant/wpa_supplicant.conf:/etc/wpa_supplicant/wpa_supplicant.conf lasery/raspap
+```
+
+1. Start wpa_supplicant in container
+```
+docker exec -it raspap bash
+wpa_supplicant -i wlan0 -c /etc/wpa_supplicant/wpa_supplicant.conf
+```
+
+1. Stop raspap
+```
+docker rm -f raspap
+```
 
 # Testing
 ```
