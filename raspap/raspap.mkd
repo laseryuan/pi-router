@@ -3,7 +3,7 @@
 ```
 cd ~/projects/rpi-router/raspap
 
-docker run --rm --privileged --net=host --name raspap \
+docker run --rm --pid=host --privileged --net=host --name raspap \
 -v /etc/wpa_supplicant/wpa_supplicant.conf:/etc/wpa_supplicant/wpa_supplicant.conf \
 -v $PWD/entrypoint.sh:/entrypoint.sh \
 lasery/raspap
@@ -24,3 +24,10 @@ https://hub.docker.com/r/jjshin/raspap/
 --cap-add=NET_ADMIN --cap-add=NET_RAW \
 -v /etc/wpa_supplicant:/etc/wpa_supplicant \
 -v /etc/network/interfaces:/etc/network/interfaces \
+
+Disable wpa_supplicant on host:
+```
+sudo pkill wpa_supplicant
+ps aux | grep wpa_supplicant
+```
+Or disable permanently https://github.com/cjimti/iotwifi#disable-wpa_supplicant-on-raspberry-pi
