@@ -5,6 +5,7 @@ cd ~/projects/rpi-router/raspap
 
 docker run --rm --privileged --net=host --name raspap \
 -v /etc/wpa_supplicant/wpa_supplicant.conf:/etc/wpa_supplicant/wpa_supplicant.conf \
+-v $PWD/entrypoint.sh:/entrypoint.sh \
 lasery/raspap
 ```
 

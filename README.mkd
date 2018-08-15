@@ -33,18 +33,13 @@ Always use "docker stop tor" to stop the router container. Don't use "docker rm 
 1. Disable wpa_supplicant on host:
 ```
 sudo pkill wpa_supplicant
+ps aux | grep wpa_supplicant
 ```
-Or follow https://github.com/cjimti/iotwifi#disable-wpa_supplicant-on-raspberry-pi
+Or disable permanently https://github.com/cjimti/iotwifi#disable-wpa_supplicant-on-raspberry-pi
 
 1. Start container
 ```
-docker run -d --restart always --privileged --net=host --name raspap -v /etc/wpa_supplicant/wpa_supplicant.conf:/etc/wpa_supplicant/wpa_supplicant.conf lasery/raspap
-```
-
-1. Start wpa_supplicant in container
-```
-docker exec -it raspap bash
-wpa_supplicant -i wlan0 -c /etc/wpa_supplicant/wpa_supplicant.conf
+docker run -d --restart always --privileged --net=host --name raspap -v /etc/wpa_supplicant/wpa_supplicant.conf:/etc/wpa_supplicant/wpa_supplicant.conf lasery/raspap:18.08
 ```
 
 1. Stop raspap

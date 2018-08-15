@@ -47,10 +47,12 @@ RUN chown -R www-data:www-data /etc/raspap
 RUN mkdir /etc/raspap/hostapd
 RUN mv /var/www/html/installers/*log.sh /etc/raspap/hostapd
 
+COPY entrypoint.sh /entrypoint.sh
+
 EXPOSE 80
 EXPOSE 100
 
-ENTRYPOINT ["lighttpd", "-D", "-f", "/etc/lighttpd/lighttpd.conf"]
+ENTRYPOINT ["/entrypoint.sh"]
 
 # RUN DEBIAN_FRONTEND=noninteractive apt-get -q -y install \
   # dhcpcd5 \
