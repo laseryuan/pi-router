@@ -10,11 +10,13 @@ term_handler() {
   echo "Done"
   exit 143; # 128 + 15 -- SIGTERM
 }
+
 trap 'term_handler' SIGHUP SIGINT SIGTERM
 
 if [ -z $SERVER_IP ]; then
     echo "Get server ip..."
-    SERVER_IP=`getent hosts $SERVER_NAME | awk '{ print $1 }'`
+    SERVER_IP=`curl http://119.29.29.29/d?dn=$SERVER_NAME`
+    echo "$SERVER_NAME: $SERVER_IP"
     export SERVER_IP
 fi
 
