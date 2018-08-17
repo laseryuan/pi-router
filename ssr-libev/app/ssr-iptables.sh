@@ -48,8 +48,8 @@ iptables -t mangle -I PREROUTING -d 255.255.0.0/8 -j RETURN
 # iptables -t nat -A OUTPUT -m owner --uid-owner $_tor_uid -j RETURN
 
 # allow clearnet access for hosts in $_non_tor
-# SSR_SERVER="219.76.93.35"
-_non_tor="127.0.0.0/9 127.128.0.0/10 $SERVER_NAME"
+echo "Add $SERVER_IP to iptables"
+_non_tor="127.0.0.0/9 127.128.0.0/10 $SERVER_IP"
 for _clearnet in $_non_tor; do
    iptables -t nat -A OUTPUT -d $_clearnet -j RETURN
 done
