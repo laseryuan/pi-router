@@ -13,6 +13,13 @@ term_handler() {
 
 trap 'term_handler' SIGHUP SIGINT SIGTERM
 
+if [ -n $Gateway ]; then
+    echo "Set the gateway ..."
+    echo "Disalbe the eth0 gateway..."
+    ip route delete default via 192.168.8.1
+    echo "Done"
+fi
+
 if [ -z $SERVER_IP ]; then
     echo "Get server ip..."
     SERVER_IP=`curl http://119.29.29.29/d?dn=$SERVER_NAME`
