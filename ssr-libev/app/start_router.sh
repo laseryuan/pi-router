@@ -13,7 +13,7 @@ term_handler() {
 
 trap 'term_handler' SIGHUP SIGINT SIGTERM
 
-if [ -n $Gateway ]; then
+if [[ -n $Gateway ]]; then
     echo "Set the gateway ..."
     echo "Disalbe the eth0 gateway..."
     ip route delete default via 192.168.8.1
