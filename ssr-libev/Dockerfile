@@ -26,4 +26,5 @@ COPY app /root/app
 WORKDIR /root/app/
 
 STOPSIGNAL SIGTERM
-ENTRYPOINT [ "./start_router.sh" ]
+COPY docker-entrypoint.sh /
+ENTRYPOINT ["/docker-entrypoint.sh"]
