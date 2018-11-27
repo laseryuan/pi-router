@@ -1,7 +1,7 @@
 # Development
 1. Start container
 ```
-cd ~/projects/rpi-router/raspap
+cd ~/projects/pi-router/raspap
 
 docker run --rm --pid=host --privileged --net=host --name raspap \
 -v /etc/wpa_supplicant/wpa_supplicant.conf:/etc/wpa_supplicant/wpa_supplicant.conf \

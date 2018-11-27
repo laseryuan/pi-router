@@ -2,7 +2,7 @@
 Client (ssr's libev has no server version):
 
 ```
-cd ~/projects/rpi-router/ssr-libev
+cd ~/projects/pi-router/ssr-libev
 docker rm -f ssr-router
 
 docker run --rm --sysctl net.ipv4.conf.all.route_localnet=1 --net=host --cap-add=NET_ADMIN --cap-add=NET_RAW --name ssr-router \
