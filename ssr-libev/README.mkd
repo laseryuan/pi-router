@@ -38,8 +38,8 @@ PI_ROUTER_VERSION=18.11
 docker build --cache-from lasery/pi-router -t lasery/pi-router .
 
 docker tag lasery/pi-router lasery/pi-router:$PI_ROUTER_VERSION
-docker push lasery/pi-router:$PI_ROUTER_VERSION
 
+docker push lasery/pi-router:$PI_ROUTER_VERSION
 docker push lasery/pi-router
 ```
 
