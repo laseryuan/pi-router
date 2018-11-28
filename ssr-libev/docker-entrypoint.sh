@@ -25,12 +25,12 @@ run-help() {
     --net=host \
     --cap-add=NET_ADMIN \
     --cap-add=NET_RAW \
-    --name ssr-router \
+    --name pi-router \
     -e TPROXY_PORT={19040} \
     -e SERVER_NAME={changeme.com} \
     -e SERVER_PORT={14443} \
     -e SERVER_PASSWORD={MY_SSPASSWORD} \
-    lasery/rpi-ssr-libev \
+    lasery/pi-router \
     router
 }
 

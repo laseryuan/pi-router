@@ -4,14 +4,14 @@
 1. Start router container
 - ShadowsocksR
 ```
-docker run --rm lasery/rpi-ssr-libev help
+docker run --rm lasery/pi-router help
 
 read -p 'Server IP (optional): ' SERVER_IP && echo $SERVER_IP
 ```
 
 Stop the router:
 ```
-docker stop ssr-router
+docker stop pi-router
 ```
 
 - Tor

@@ -3,23 +3,23 @@ Client (ssr's libev has no server version):
 
 ```
 cd ~/projects/pi-router/ssr-libev
-docker rm -f ssr-router
+docker rm -f pi-router
 
 docker run --rm \
   --sysctl net.ipv4.conf.all.route_localnet=1 \
   --net=host \
   --cap-add=NET_ADMIN \
   --cap-add=NET_RAW \
-  --name ssr-router \
+  --name pi-router \
   -v $PWD/app/:/root/app/ \
   -v $PWD/docker-entrypoint.sh:/docker-entrypoint.sh \
   -e TPROXY_PORT=19040 \
   -e VERBOSE=TRUE \
   -e SERVER_IP=192.168.1.120 -e SERVER_PORT=14443 -e SERVER_PASSWORD=MY_SSPASSWORD \
-  lasery/rpi-ssr-libev \
+  lasery/pi-router \
   router
 
-docker logs -f ssr-router
+docker logs -f pi-router
 
 curl ipinfo.io/ip
 
@@ -33,14 +33,14 @@ sudo watch -d iptables -t nat -L --line-numbers -v -n
 
 ## Build
 ```
-SSR_LIBEV_VERSION=18.11
+PI_ROUTER_VERSION=18.11
 
-docker build --cache-from lasery/rpi-ssr-libev -t lasery/rpi-ssr-libev .
+docker build --cache-from lasery/pi-router -t lasery/pi-router .
 
-docker tag lasery/rpi-ssr-libev lasery/rpi-ssr-libev:$SSR_LIBEV_VERSION
-docker push lasery/rpi-ssr-libev:$SSR_LIBEV_VERSION
+docker tag lasery/pi-router lasery/pi-router:$PI_ROUTER_VERSION
+docker push lasery/pi-router:$PI_ROUTER_VERSION
 
-docker push lasery/rpi-ssr-libev
+docker push lasery/pi-router
 ```
 
 # Testing
