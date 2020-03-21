@@ -19,12 +19,11 @@ fw_setup() {
   if [ -z "$DOCKER_NET" ]
   then
     iptables -t nat -A PREROUTING -p tcp -j REDSOCKS
+    iptables -t nat -A OUTPUT -p tcp -m owner ! --uid-owner redsocks -j REDSOCKS
   else
     iptables -t nat -A PREROUTING -i $DOCKER_NET -p tcp -j REDSOCKS
   fi
 
-  # redirect non redsocks packets to redsocks
-  iptables -t nat -A OUTPUT -p tcp -m owner ! --uid-owner redsocks -j REDSOCKS
 }
 
 ##########################
