@@ -31,9 +31,8 @@ docker buildx bake
 ```
  -e DOCKER_NET
 
-docker run --privileged=true --net=host \
+docker run --privileged=true --net=host --sysctl net.ipv4.conf.all.route_localnet=1 --name rpi-router \
   --rm \
-  --name rpi-router \
   rpi-router \
   run \
   ${PROXY_IP} ${PROXY_PORT}

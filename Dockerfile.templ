@@ -11,11 +11,11 @@ RUN apt-get update && apt-get install -y redsocks iptables
 # Redsocks configuration files...
 COPY ./redsocks/redsocks.tmpl /etc/redsocks.tmpl
 COPY ./redsocks/whitelist.txt /etc/redsocks-whitelist.txt
-COPY ./redsocks/redsocks.sh /usr/local/bin/redsocks.sh
 COPY ./redsocks/redsocks-fw.sh /usr/local/bin/redsocks-fw.sh
 
 RUN chmod +x /usr/local/bin/*
 
 COPY docker-entrypoint.sh /
+COPY README.md /
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
