@@ -29,9 +29,10 @@ docker buildx bake
 ```
 
 ```
- -e DOCKER_NET \
+  -e DOCKER_NET \
 
   -v $(pwd)/redsocks/redsocks-fw.sh:/usr/local/bin/redsocks-fw.sh
+  -v $(pwd)/redsocks/redsocks.tmpl:/etc/redsocks.tmpl
 
 docker run --rm --privileged=true --net=host --sysctl net.ipv4.conf.all.route_localnet=1 --name rpi-router \
   rpi-router \
@@ -43,7 +44,30 @@ curl ipinfo.io/ip
 sudo watch -d iptables -t nat -L --line-numbers -v -n
 
 sudo iptables -t nat -D PREROUTING 2
-sudo iptables -D INPUT 2
+sudo iptables -t nat -D OUTPUT 2
+```
+
+## Test
+Credit: https://github.com/fphammerle/docker-tor-proxy
+test proxies:
+```
+$ curl --proxy socks5h://localhost:9050 ipinfo.io
+$ torsocks wget -O - ipinfo.io
+$ torsocks lynx -dump https://check.torproject.org/
+$ dig @localhost fabian.hammerle.me
+$ ssh -o 'ProxyCommand nc -x localhost:9050 -v %h %p' abcdefghi.onion
+# no anonymity!
+$ chromium-browser --proxy-server=socks5://localhost:9050 ipinfo.io
+```
+
+isolate:
+```
+iptables -A OUTPUT ! -o lo -j REJECT --reject-with icmp-admin-prohibited
+```
+
+change SocksTimeout option:
+```
+$ docker run -e SOCKS_TIMEOUT_SECONDS=60 …
 ```
 
 ## Tunnel router

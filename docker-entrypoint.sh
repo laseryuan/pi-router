@@ -3,9 +3,9 @@
 
 main() {
   case "$1" in
-    run)
+    redsocks)
 shift
-run "$@"
+run-redsocks "$@"
       ;;
     help)
 cat /README.md
@@ -16,7 +16,7 @@ cat /README.md
   esac
 }
 
-run() {
+run-redsocks() {
   if test $# -eq 2
   then
       proxy_ip=$1
@@ -44,7 +44,7 @@ run() {
   trap 'kill ${!}; term_handler' SIGTERM
 
   echo "Starting redsocks..."
-  /usr/sbin/redsocks -c /tmp/redsocks.conf &
+  redsocks -c /tmp/redsocks.conf &
   pid="$!"
 
   # wait indefinetely
