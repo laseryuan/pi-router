@@ -7,6 +7,10 @@ main() {
 shift
 run-redsocks "$@"
       ;;
+    ipt2socks)
+shift
+run-ipt2socks "$@"
+      ;;
     help)
 cat /README.md
       ;;
@@ -14,6 +18,36 @@ cat /README.md
       exec "$@"
       ;;
   esac
+}
+
+run-ipt2socks() {
+  if test $# -eq 2
+  then
+      proxy_ip=$1
+      proxy_port=$2
+  else
+      echo "No proxy URL defined. Using default."
+      exit 125
+  fi
+
+  echo "Activating iptables rules..."
+  /usr/local/bin/redsocks-fw.sh start
+
+  pid=0
+
+  # setup handlers
+  trap 'kill ${!}; usr_handler' SIGUSR1
+  trap 'kill ${!}; term_handler' SIGTERM
+
+  echo "Starting ipt2socks using proxy ${proxy_ip}:${proxy_port}..."
+  ipt2socks -R -s ${proxy_ip} -p ${proxy_port} &
+  pid="$!"
+
+  # wait indefinetely
+  while true
+  do
+      tail -f /dev/null & wait ${!}
+  done
 }
 
 run-redsocks() {

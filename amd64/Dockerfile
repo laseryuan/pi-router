@@ -15,6 +15,49 @@ COPY ./redsocks/redsocks-fw.sh /usr/local/bin/redsocks-fw.sh
 
 RUN chmod +x /usr/local/bin/*
 
+# Install redsocks
+RUN apt-get install -qy \
+      git curl perl ipset iproute2 dnsmasq make gcc libuv1-dev automake libtool
+
+# Install ss-tproxy
+
+# - Installation of chinadns-ng
+RUN git clone --depth=1 https://github.com/zfl9/chinadns-ng /tmp/chinadns-ng
+WORKDIR /tmp/chinadns-ng
+RUN make && make install
+
+# - Install libuv
+ENV libuv_version="1.32.0"
+RUN curl -L https://github.com/libuv/libuv/archive/v$libuv_version.tar.gz -o /tmp/libuv-$libuv_version.tar.gz
+RUN tar xvf /tmp/libuv-$libuv_version.tar.gz -C /tmp/
+RUN mv /tmp/libuv-$libuv_version /tmp/libuv
+
+WORKDIR /tmp/libuv
+RUN ./autogen.sh
+RUN ./configure --prefix=/opt/libuv --enable-shared=no --enable-static=yes CC="gcc -O3"
+RUN make && make install
+
+# - Installation of ipt2socks
+ENV ipt2socks_version="1.0.2"
+RUN curl -L https://github.com/zfl9/ipt2socks/archive/v$ipt2socks_version.tar.gz -o /tmp/ipt2socks.tar.gz
+RUN tar xvf /tmp/ipt2socks.tar.gz -C /tmp/
+RUN mv /tmp/ipt2socks-$ipt2socks_version /opt/ipt2socks
+WORKDIR /opt/ipt2socks
+RUN make INCLUDES="-I/opt/libuv/include" LDFLAGS="-L/opt/libuv/lib" && make install
+
+# - Build ss-tproxy
+ENV sstproxy_version="4.6"
+RUN curl -L https://github.com/zfl9/ss-tproxy/archive/v${sstproxy_version}.tar.gz -o /tmp/sstproxy.tar.gz
+RUN tar xvf /tmp/sstproxy.tar.gz -C /tmp/
+RUN mv /tmp/ss-tproxy-${sstproxy_version} /tmp/ss-tproxy
+
+WORKDIR /tmp/ss-tproxy
+RUN chmod +x ss-tproxy && \
+  cp -af ss-tproxy /usr/local/bin && \
+  mkdir -p /etc/ss-tproxy && \
+  cp -af ss-tproxy.conf gfwlist* chnroute* ignlist* /etc/ss-tproxy && \
+  cp -af ss-tproxy.service /etc/systemd/system
+
 COPY docker-entrypoint.sh /
 COPY README.md /
 
