@@ -1,0 +1,4 @@
+
+start_ipt2socks() {
+    (ipt2socks -s ${socks_ip} -p ${socks_port} </dev/null &>>/var/log/ipt2socks.log &)
+}

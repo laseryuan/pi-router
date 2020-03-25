@@ -11,6 +11,10 @@ run-redsocks "$@"
 shift
 run-ipt2socks "$@"
       ;;
+    sstproxy)
+shift
+run-sstproxy "$@"
+      ;;
     help)
 cat /README.md
       ;;
@@ -18,6 +22,43 @@ cat /README.md
       exec "$@"
       ;;
   esac
+}
+
+run-sstproxy() {
+  if test $# -eq 2
+  then
+      socks_ip=$1
+      socks_port=$2
+  else
+      echo "No proxy URL defined. Using default."
+      exit 125
+  fi
+
+  echo "Creating ss-tproxy configuration file ..."
+  sed -e "s|\${proxy_startcmd}|start_ipt2socks|" \
+    -e "s|\${proxy_stopcmd}|kill -9 \$(pidof ipt2socks)|" \
+      /etc/ss-tproxy/tmpl/ss-tproxy.conf.tmpl > /etc/ss-tproxy/ss-tproxy.conf
+
+  echo "Creating ipt2socks configuration file using ${socks_ip}:${socks_port}..."
+  sed -e "s|\${socks_ip}|${socks_ip}|" \
+      -e "s|\${socks_port}|${socks_port}|" \
+      /etc/ss-tproxy/tmpl/start_ipt2socks.tmpl >> /etc/ss-tproxy/ss-tproxy.conf
+
+  cat /etc/ss-tproxy/ss-tproxy.conf
+
+  echo "Starting ss-tproxy ..."
+  ss-tproxy start
+  pid="$!"
+
+  # setup handlers
+  trap 'kill ${!}; usr_handler' SIGUSR1
+  trap 'kill ${!}; term_handler' SIGTERM
+
+  # wait indefinetely
+  while true
+  do
+      tail -f /dev/null & wait ${!}
+  done
 }
 
 run-ipt2socks() {
