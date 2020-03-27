@@ -1,7 +1,9 @@
+DEBUG='true'
+
 ## mode
-#mode='global'  # global 模式 (不分流)
+mode='global'  # global 模式 (不分流)
 #mode='gfwlist' # gfwlist 模式 (黑名单)
-mode='chnroute' # chnroute 模式 (白名单)
+#mode='chnroute' # chnroute 模式 (白名单)
 
 ## ipv4/6
 ipv4='true'     # true:启用ipv4透明代理; false:关闭ipv4透明代理
@@ -11,13 +13,13 @@ ipv6='false'    # true:启用ipv6透明代理; false:关闭ipv6透明代理
 tproxy='false'  # true:TPROXY+TPROXY; false:REDIRECT+TPROXY
 
 ## tcponly
-tcponly='false' # true:仅代理TCP流量; false:代理TCP和UDP流量
+tcponly='true' # true:仅代理TCP流量; false:代理TCP和UDP流量
 
 ## selfonly
 selfonly='false' # true:仅代理本机流量; false:代理本机及"内网"流量
 
 ## proxy
-proxy_svraddr4=(1.2.3.4) # 服务器的 IPv4 地址或域名，允许填写多个服务器地址，空格隔开
+proxy_svraddr4=(221.127.66.9) # 服务器的 IPv4 地址或域名，允许填写多个服务器地址，空格隔开
 proxy_svraddr6=()        # 服务器的 IPv6 地址或域名，允许填写多个服务器地址，空格隔开
 proxy_svrport='80,443'   # 服务器的监听端口，可填多个端口，格式同 ipts_proxy_dst_port
 proxy_tcpport='60080'    # ss/ssr/v2ray 等本机进程的 TCP 监听端口，该端口支持透明代理
@@ -32,11 +34,11 @@ dns_remote='8.8.8.8#53'               # 远程 IPv4 DNS，必须指定端口，�
 dns_remote6='2001:4860:4860::8888#53' # 远程 IPv6 DNS，必须指定端口，提示：访问远程 DNS 会走代理
 
 ## dnsmasq
-dnsmasq_bind_port='53'                  # dnsmasq 服务器监听端口，见 README
+dnsmasq_bind_port='60053'                  # dnsmasq 服务器监听端口，见 README
 dnsmasq_cache_size='4096'               # DNS 缓存大小，大小为 0 表示禁用缓存
 dnsmasq_cache_time='3600'               # DNS 缓存时间，单位是秒，最大 3600 秒
 dnsmasq_query_maxcnt='1024'             # 设置并发 DNS 查询的最大数量，默认为 150
-dnsmasq_log_enable='false'              # 记录详细日志，除非进行调试，否则不建议启用
+dnsmasq_log_enable='${DEBUG}'              # 记录详细日志，除非进行调试，否则不建议启用
 dnsmasq_log_file='/var/log/dnsmasq.log' # 日志文件，如果不想保存日志可以改为 /dev/null
 dnsmasq_conf_dir=()                     # `--conf-dir` 选项的参数，可以填多个，空格隔开
 dnsmasq_conf_file=()                    # `--conf-file` 选项的参数，可以填多个，空格隔开
@@ -49,7 +51,7 @@ chinadns_repeat='1'                      # 向可信 DNS 发送几次 DNS 查询
 chinadns_fairmode='false'                # 使用公平模式，具体看 chinadns-ng 的 README
 chinadns_gfwlist_mode='false'            # gfwlist 模式，加载 gfwlist.txt/gfwlist.ext
 chinadns_noip_as_chnip='false'           # 启用 chinadns-ng 的 `--noip-as-chnip` 选项
-chinadns_verbose='false'                 # 记录详细日志，除非进行调试，否则不建议启用
+chinadns_verbose='${DEBUG}'                 # 记录详细日志，除非进行调试，否则不建议启用
 chinadns_logfile='/var/log/chinadns.log' # 日志文件，如果不想保存日志可以改为 /dev/null
 chinadns_privaddr4=()                    # IPv4 私有地址段，多个用空格隔开，具体见 README
 chinadns_privaddr6=()                    # IPv6 私有地址段，多个用空格隔开，具体见 README
@@ -59,7 +61,7 @@ dns2tcp_bind_port='65454'               # dns2tcp 转发服务器监听端口，
 dns2tcp_tcp_syncnt=''                   # dns2tcp 的 `-s` 选项，留空表示不设置此选项
 dns2tcp_tcp_quickack='false'            # dns2tcp 的 `-a` 选项，选项取值为true/false
 dns2tcp_tcp_fastopen='false'            # dns2tcp 的 `-f` 选项，选项取值为true/false
-dns2tcp_verbose='false'                 # 记录详细日志，除非进行调试，否则不建议启用
+dns2tcp_verbose='${DEBUG}'                 # 记录详细日志，除非进行调试，否则不建议启用
 dns2tcp_logfile='/var/log/dns2tcp.log'  # 日志文件，如果不想保存日志可以改为 /dev/null
 
 ## ipts

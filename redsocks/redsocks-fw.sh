@@ -57,6 +57,7 @@ fw_setup_redsocks() {
 ##########################
 fw_clear() {
   iptables-save | grep -v REDSOCKS | iptables-restore
+  iptables-save | grep -v SSTP | iptables-restore
   #iptables -L -t nat --line-numbers
   #iptables -t nat -D PREROUTING 2
 }

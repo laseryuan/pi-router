@@ -33,13 +33,15 @@ docker buildx bake
 
   -v $(pwd)/redsocks/redsocks-fw.sh:/usr/local/bin/redsocks-fw.sh
   -v $(pwd)/redsocks/redsocks.tmpl:/etc/redsocks.tmpl
-  -v $(pwd)/ss-tproxy:/etc/ss-tproxy/tmpl/
-  -v $(pwd)/docker-entrypoint.sh:/docker-entrypoint.sh
+  -v $(pwd)/docker-entrypoint.sh:/docker-entrypoint.sh \
+  -v $(pwd)/ss-tproxy:/etc/ss-tproxy/tmpl/ \
 
-docker run --rm --privileged=true --net=host --sysctl net.ipv4.conf.all.route_localnet=1 --name rpi-router \
+docker run --privileged=true --net=host --sysctl net.ipv4.conf.all.route_localnet=1 --name rpi-router \
+  -it --rm \
   rpi-router \
-  run \
-  ${PROXY_IP} ${PROXY_PORT}
+  bash
+
+  ss-tproxy ${PROXY_IP} ${PROXY_PORT}
 
 curl ipinfo.io/ip
 

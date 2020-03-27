@@ -25,6 +25,24 @@ cat /README.md
 }
 
 run-sstproxy() {
+  ss-tproxy-config "$@"
+
+  echo "Starting ss-tproxy ..."
+  ss-tproxy start
+  pid="$!"
+
+  # setup handlers
+  trap 'kill ${!}; usr_handler' SIGUSR1
+  trap 'kill ${!}; term_handler' SIGTERM
+
+  # wait indefinetely
+  while true
+  do
+      tail -f /dev/null & wait ${!}
+  done
+}
+
+ss-tproxy-config() {
   if test $# -eq 2
   then
       socks_ip=$1
@@ -45,20 +63,6 @@ run-sstproxy() {
       /etc/ss-tproxy/tmpl/start_ipt2socks.tmpl >> /etc/ss-tproxy/ss-tproxy.conf
 
   cat /etc/ss-tproxy/ss-tproxy.conf
-
-  echo "Starting ss-tproxy ..."
-  ss-tproxy start
-  pid="$!"
-
-  # setup handlers
-  trap 'kill ${!}; usr_handler' SIGUSR1
-  trap 'kill ${!}; term_handler' SIGTERM
-
-  # wait indefinetely
-  while true
-  do
-      tail -f /dev/null & wait ${!}
-  done
 }
 
 run-ipt2socks() {

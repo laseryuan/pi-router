@@ -6,7 +6,8 @@ ENV DEBIAN_FRONTEND noninteractive
 ENV DOCKER_NET docker0
 
 # Install packages
-RUN apt-get update && apt-get install -y redsocks iptables
+RUN apt-get update && apt-get install -y \
+      redsocks iptables git curl perl ipset iproute2 dnsmasq make gcc libuv1-dev automake libtool unzip
 
 # Redsocks configuration files...
 COPY ./redsocks/redsocks.tmpl /etc/redsocks.tmpl
@@ -14,10 +15,6 @@ COPY ./redsocks/whitelist.txt /etc/redsocks-whitelist.txt
 COPY ./redsocks/redsocks-fw.sh /usr/local/bin/redsocks-fw.sh
 
 RUN chmod +x /usr/local/bin/*
-
-# Install redsocks
-RUN apt-get install -qy \
-      git curl perl ipset iproute2 dnsmasq make gcc libuv1-dev automake libtool
 
 # Install ss-tproxy
 
@@ -44,6 +41,14 @@ RUN tar xvf /tmp/ipt2socks.tar.gz -C /tmp/
 RUN mv /tmp/ipt2socks-$ipt2socks_version /opt/ipt2socks
 WORKDIR /opt/ipt2socks
 RUN make INCLUDES="-I/opt/libuv/include" LDFLAGS="-L/opt/libuv/lib" && make install
+
+# - Installation of dns2tcp
+ENV dns2tcp_version="master"
+RUN curl -L https://github.com/zfl9/dns2tcp/archive/${dns2tcp_version}.zip -o /tmp/dns2tcp.zip
+RUN unzip /tmp/dns2tcp.zip -d /tmp/
+RUN mv /tmp/dns2tcp-${dns2tcp_version} /tmp/dns2tcp
+WORKDIR /tmp/dns2tcp
+RUN make && make install
 
 # - Build ss-tproxy
 ENV sstproxy_version="4.6"
