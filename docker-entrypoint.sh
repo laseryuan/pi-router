@@ -13,7 +13,7 @@ run-ipt2socks "$@"
       ;;
     sstproxy)
 shift
-run-sstproxy "$@"
+run-sstproxy
       ;;
     help)
 cat /README.md
@@ -25,24 +25,22 @@ cat /README.md
 }
 
 run-sstproxy() {
-  ss-tproxy-config "$@"
+  ss-tproxy-config
+
+  # setup handlers
+  trap 'usr_handler' SIGUSR1
+  trap 'term_handler_sstp' SIGTERM
 
   echo "Starting ss-tproxy ..."
   ss-tproxy start
-  pid="$!"
-
-  # setup handlers
-  trap 'kill ${!}; usr_handler' SIGUSR1
-  trap 'kill ${!}; term_handler' SIGTERM
 
   # wait indefinetely
-  while true
-  do
-      tail -f /dev/null & wait ${!}
-  done
+  echo wait indefinetely
+  tail -f /dev/null & wait
+  echo ending ...
 }
 
-ss-tproxy-config() {
+ss-tproxy-config-valid() {
   if test $# -eq 2
   then
       socks_ip=$1
@@ -51,15 +49,29 @@ ss-tproxy-config() {
       echo "No proxy URL defined. Using default."
       exit 125
   fi
+}
+
+ss-tproxy-config() {
+  socks_ip=${SOCKS_IP}
+  socks_port=${SOCKS_PORT}
+  if_debug=${VERBOSE}
+  # ss-tproxy-config-valid
+
+  [[ "${if_debug}" == "true" ]] && ipt2socks_verbose='-v' || ipt2socks_verbose=''
 
   echo "Creating ss-tproxy configuration file ..."
-  sed -e "s|\${proxy_startcmd}|start_ipt2socks|" \
+  sed \
+    -e "s|\${host_address}|${HOST_ADDRESS}|" \
+    -e "s|\${DEBUG}|${if_debug}|" \
+    -e "s|\${proxy_startcmd}|start_ipt2socks|" \
     -e "s|\${proxy_stopcmd}|kill -9 \$(pidof ipt2socks)|" \
       /etc/ss-tproxy/tmpl/ss-tproxy.conf.tmpl > /etc/ss-tproxy/ss-tproxy.conf
 
   echo "Creating ipt2socks configuration file using ${socks_ip}:${socks_port}..."
-  sed -e "s|\${socks_ip}|${socks_ip}|" \
-      -e "s|\${socks_port}|${socks_port}|" \
+  sed \
+    -e "s|\${socks_ip}|${socks_ip}|" \
+    -e "s|\${socks_port}|${socks_port}|" \
+    -e "s|\${verbose}|${ipt2socks_verbose}|" \
       /etc/ss-tproxy/tmpl/start_ipt2socks.tmpl >> /etc/ss-tproxy/ss-tproxy.conf
 
   cat /etc/ss-tproxy/ss-tproxy.conf
@@ -148,6 +160,12 @@ term_handler() {
         /usr/local/bin/redsocks-fw.sh stop
     fi
     exit 143; # 128 + 15 -- SIGTERM
+}
+
+term_handler_sstp() {
+  echo "Term signal catched. Shutdown ss-tproxy ..."
+  ss-tproxy stop
+  exit 143; # 128 + 15 -- SIGTERM
 }
 
 main "$@"

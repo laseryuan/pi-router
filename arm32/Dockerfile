@@ -63,6 +63,7 @@ RUN chmod +x ss-tproxy && \
   cp -af ss-tproxy.conf gfwlist* chnroute* ignlist* /etc/ss-tproxy && \
   cp -af ss-tproxy.service /etc/systemd/system
 
+COPY ss-tproxy/ /etc/ss-tproxy/tmpl/
 COPY docker-entrypoint.sh /
 COPY README.md /
 

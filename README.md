@@ -30,6 +30,10 @@ docker buildx bake
 
 ```
   -e DOCKER_NET \
+  -e HOST_ADDRESS=\
+  -e VERBOSE=true \
+  -e SOCKS_IP=\
+  -e SOCKS_PORT=\
 
   -v $(pwd)/redsocks/redsocks-fw.sh:/usr/local/bin/redsocks-fw.sh
   -v $(pwd)/redsocks/redsocks.tmpl:/etc/redsocks.tmpl
@@ -41,7 +45,7 @@ docker run --privileged=true --net=host --sysctl net.ipv4.conf.all.route_localne
   rpi-router \
   bash
 
-  ss-tproxy ${PROXY_IP} ${PROXY_PORT}
+  sstproxy ${PROXY_IP} ${PROXY_PORT}
 
 curl ipinfo.io/ip
 
