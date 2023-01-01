@@ -1,31 +1,14 @@
 # Usage
 ```
-docker run --rm lasery/rpi-router help
+docker run --rm lasery/pi-router help
 ```
 
 # Development
 
-## Set enviornment
-```
-export REPO=rpi-router && export VERSION=$(date "+%y.%m")
-cd ~/projects/rpi-router
-```
-
-```
-DEV_SERVER=\
-
-sshfs ${DEV_SERVER}:projects/${REPO} ~/projects/sshfs
-cd ~/projects/sshfs
-
-Mount docker volume
-sudo vim /etc/fuse.conf # uncomment user_allow_other in /etc/fuse.conf
-sshfs -o allow_other ${DEV_SERVER}:projects/${REPO} ~/projects/sshfs
-```
-
 ## Build image
 ```
-./build.sh docker
-docker buildx bake
+python3 ~/mbuild/utils/build.py docker
+python3 ~/mbuild/utils/build.py deploy
 ```
 
 ```
@@ -40,9 +23,9 @@ docker buildx bake
   -v $(pwd)/docker-entrypoint.sh:/docker-entrypoint.sh \
   -v $(pwd)/ss-tproxy:/etc/ss-tproxy/tmpl/ \
 
-docker run --privileged=true --net=host --sysctl net.ipv4.conf.all.route_localnet=1 --name rpi-router \
+docker run --privileged=true --net=host --sysctl net.ipv4.conf.all.route_localnet=1 --name pi-router \
   -it --rm \
-  rpi-router \
+  pi-router \
   bash
 
   sstproxy ${PROXY_IP} ${PROXY_PORT}
